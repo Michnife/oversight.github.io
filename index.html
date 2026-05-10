@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OverSight — Reconnaissance autonome en combat urbain</title>
+  <meta name="description" content="OverSight conçoit des drones autonomes pour la reconnaissance en milieu urbain contesté.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #FFFFFF;
+      --bg-2:    #F4F2EE;
+      --ink:     #0A0A0A;
+      --ink-2:   #2A2724;
+      --mute:    #6F6962;
+      --line:    #E6E2DA;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --pad: clamp(20px, 4vw, 56px);
+      --col-max: 1320px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Space Grotesk", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+      font-feature-settings: "ss01", "ss02";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      line-height: 1.45;
+    }
+
+    ::selection { background: var(--ink); color: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ── marker ─────────────────────────────────────────────────────── */
+
+    .marker {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 12px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .marker-num {
+      display: inline-block;
+      padding: 3px 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .marker-label { color: var(--mute); }
+
+    .section-title {
+      font-size: clamp(36px, 5.4vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.025em;
+      font-weight: 500;
+      margin: 24px 0 56px;
+      max-width: 18ch;
+      text-wrap: balance;
+    }
+
+    /* ── buttons ─────────────────────────────────────────────────────── */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      transition: transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+      text-decoration: none;
+    }
+    .btn-solid {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .btn-solid:hover { transform: translateY(-1px); }
+
+    /* ── status dot ──────────────────────────────────────────────────── */
+
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 999px;
+      background: #3D8F5A;
+      box-shadow: 0 0 0 0 rgba(61,143,90,0.6);
+      animation: pulse 2.4s infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0   rgba(61,143,90,0.55); }
+      70%  { box-shadow: 0 0 0 10px rgba(61,143,90,0); }
+      100% { box-shadow: 0 0 0 0   rgba(61,143,90,0); }
+    }
+
+    /* ── placeholder ─────────────────────────────────────────────────── */
+
+    .ph {
+      position: relative;
+      background:
+        repeating-linear-gradient(135deg, transparent 0 14px, rgba(10,10,10,0.06) 14px 15px),
+        var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .ph-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      background: var(--bg);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .ph-hero  { aspect-ratio: 16 / 9; width: 100%; border-radius: var(--r-xl); }
+    .ph-card  { aspect-ratio: 4 / 3; width: 100%; margin-top: 24px; }
+
+    /* ── nav ─────────────────────────────────────────────────────────── */
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 32px;
+      padding: 18px var(--pad);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .25s ease, background .25s ease;
+    }
+    .nav.is-scrolled { border-bottom-color: var(--line); }
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+    }
+    .nav-wordmark {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      font-size: 18px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .nav-links a { position: relative; padding: 4px 0; }
+    .nav-links a:hover { color: var(--mute); }
+
+    /* ── sections ────────────────────────────────────────────────────── */
+
+    main > section {
+      padding: 100px var(--pad);
+      max-width: var(--col-max);
+      margin: 0 auto;
+    }
+
+    /* ── hero ────────────────────────────────────────────────────────── */
+
+    .hero {
+      padding-top: 60px !important;
+      padding-bottom: 120px !important;
+    }
+    .hero-title {
+      font-size: clamp(56px, 11vw, 168px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      font-weight: 500;
+      margin: 0 0 40px;
+      text-wrap: balance;
+    }
+    .hero-title-em {
+      font-style: italic;
+      font-weight: 400;
+      color: var(--mute);
+    }
+    .hero-lede {
+      font-size: clamp(18px, 1.7vw, 22px);
+      line-height: 1.5;
+      max-width: 56ch;
+      color: var(--ink-2);
+      margin: 0 0 40px;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 96px;
+      flex-wrap: wrap;
+    }
+    .hero-frame { display: grid; gap: 16px; }
+
+    /* ── mission ─────────────────────────────────────────────────────── */
+
+    .mission { padding-top: 60px !important; }
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 80px;
+      margin-top: 36px;
+      align-items: start;
+    }
+    .mission-statement {
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: 1.15;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin: 0;
+      text-wrap: balance;
+    }
+    .mission-statement em { font-style: italic; color: var(--mute); }
+    .mission-body {
+      font-size: 17px;
+      color: var(--ink-2);
+      line-height: 1.6;
+      max-width: 50ch;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .mission-body p { margin: 0; }
+
+    /* ── system ──────────────────────────────────────────────────────── */
+
+    .system-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .sys-card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xl);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 100%;
+    }
+    .sys-card-tall { transform: translateY(-32px); }
+    .sys-num {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: var(--mute);
+      text-transform: uppercase;
+    }
+    .sys-card h3 {
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-weight: 500;
+      margin: 6px 0 8px;
+    }
+    .sys-card p {
+      margin: 0 0 8px;
+      color: var(--ink-2);
+      font-size: 15.5px;
+      line-height: 1.55;
+    }
+
+    /* ── capabilities ────────────────────────────────────────────────── */
+
+    .cap-list {
+      list-style: none;
+      margin: 0; padding: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+    }
+    .cap-item {
+      padding: 36px 28px 40px 0;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+    }
+    .cap-item:nth-child(3n)     { border-right: none; padding-right: 0; }
+    .cap-item:nth-last-child(-n+3) { border-bottom: none; }
+    .cap-k {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .cap-t {
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      font-weight: 500;
+      margin: 14px 0 10px;
+    }
+    .cap-d {
+      margin: 0;
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.55;
+      max-width: 32ch;
+    }
+
+    /* ── footer ──────────────────────────────────────────────────────── */
+
+    .foot {
+      border-top: 1px solid var(--line);
+      padding: 28px var(--pad);
+      max-width: var(--col-max);
+      margin: 0 auto;
+    }
+
+    /* ── responsive ──────────────────────────────────────────────────── */
+
+    @media (max-width: 960px) {
+      .nav { grid-template-columns: auto auto; gap: 16px; }
+      .nav-links { display: none; }
+      .hero-title { font-size: 64px; }
+      .mission-grid,
+      .system-grid { grid-template-columns: 1fr; gap: 40px; }
+      .sys-card-tall { transform: none; }
+      .cap-list { grid-template-columns: 1fr 1fr; }
+      .cap-item:nth-child(3n) { border-right: 1px solid var(--line); padding-right: 28px; }
+      .cap-item:nth-child(2n) { border-right: none; padding-right: 0; }
+    }
+    @media (max-width: 600px) {
+      .cap-list { grid-template-columns: 1fr; }
+      .cap-item { border-right: none !important; padding-right: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-brand">
+      <svg viewBox="0 0 220 130" width="38" height="22" style="display:block" aria-label="OverSight">
+        <g fill="currentColor">
+          <rect x="6"   y="14" width="30" height="30" rx="8"/>
+          <rect x="46"  y="14" width="30" height="30" rx="8"/>
+          <rect x="46"  y="54" width="30" height="70" rx="14"/>
+          <rect x="92"  y="6"  width="30" height="38" rx="10"/>
+          <rect x="92"  y="54" width="30" height="70" rx="14"/>
+          <path d="M76 44 Q 92 44 92 28 L 92 36 Q 92 54 76 54 Z"/>
+          <rect x="138" y="6"  width="30" height="38" rx="10"/>
+          <rect x="138" y="54" width="30" height="70" rx="14"/>
+          <path d="M122 44 Q 138 44 138 28 L 138 36 Q 138 54 122 54 Z"/>
+        </g>
+      </svg>
+      <span class="nav-wordmark">OverSight</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#system">Système</a>
+      <a href="#capacites">Capacités</a>
+    </nav>
+    <div></div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="top" class="hero">
+      <h1 class="hero-title">
+        Reconnaissance<br>
+        <span class="hero-title-em">autonome</span><br>
+        en combat urbain.
+      </h1>
+
+      <p class="hero-lede">
+        OverSight conçoit des drones autonomes capables de cartographier,
+        identifier et transmettre l'environnement tactique d'une zone urbaine
+        contestée — sans pilote, sans signal.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#system" class="btn btn-solid">Voir le système →</a>
+      </div>
+
+      <div class="hero-frame">
+        <div class="ph ph-hero">
+          <span class="ph-label">VUE DRONE / RENDU 3D · 16:9 · Plan plongeant</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSION -->
+    <section class="mission">
+      <div class="marker">
+        <span class="marker-num">01</span>
+        <span class="marker-label">Mission</span>
+      </div>
+      <div class="mission-grid">
+        <p class="mission-statement">
+          Le combat urbain reste l'environnement le plus meurtrier pour les
+          forces déployées au sol. Nous construisons l'<em>œil</em> qui
+          précède l'engagement.
+        </p>
+        <div class="mission-body">
+          <p>
+            OverSight développe un drone compact, lancé à la main, qui pénètre
+            un bâtiment ou un quartier dense de manière entièrement autonome.
+            Sans GPS, sans liaison radio continue, l'appareil cartographie,
+            détecte les présences humaines, distingue le combattant du civil,
+            et restitue une vue tactique exploitable en temps réel.
+          </p>
+          <p>
+            Notre objectif n'est pas de remplacer le soldat. C'est de lui
+            rendre quatre minutes — celles pendant lesquelles il entre
+            aujourd'hui à l'aveugle.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYSTÈME -->
+    <section id="system">
+      <div class="marker">
+        <span class="marker-num">02</span>
+        <span class="marker-label">Système</span>
+      </div>
+      <h2 class="section-title">Une plateforme. Trois couches.</h2>
+
+      <div class="system-grid">
+        <article class="sys-card">
+          <span class="sys-num">A</span>
+          <h3>Châssis OS-1</h3>
+          <p>
+            Aéronef quadri-rotors carénés, 380 g, lancé à la main. Conçu
+            pour traverser une fenêtre brisée et continuer à voler après
+            collision.
+          </p>
+          <div class="ph ph-card">
+            <span class="ph-label">CHÂSSIS · vue 3/4</span>
+          </div>
+        </article>
+
+        <article class="sys-card sys-card-tall">
+          <span class="sys-num">B</span>
+          <h3>Pilote embarqué</h3>
+          <p>
+            Module de navigation visuelle-inertielle. SLAM dense en
+            intérieur, pas de dépendance GPS, pas de liaison continue
+            requise vers l'opérateur.
+          </p>
+          <div class="ph ph-card">
+            <span class="ph-label">SCHÉMA · pile logicielle</span>
+          </div>
+        </article>
+
+        <article class="sys-card">
+          <span class="sys-num">C</span>
+          <h3>Vue tactique</h3>
+          <p>
+            Restitution sur tablette durcie : plan filaire du bâtiment,
+            positions identifiées, niveau de confiance par détection.
+            Lecture en cinq secondes.
+          </p>
+          <div class="ph ph-card">
+            <span class="ph-label">UI · interface opérateur</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CAPACITÉS -->
+    <section id="capacites">
+      <div class="marker">
+        <span class="marker-num">03</span>
+        <span class="marker-label">Capacités</span>
+      </div>
+      <h2 class="section-title">Ce que fait l'appareil.</h2>
+
+      <ul class="cap-list">
+        <li class="cap-item">
+          <span class="cap-k">01</span>
+          <h3 class="cap-t">Navigation sans GPS</h3>
+          <p class="cap-d">Estimation de pose visuelle-inertielle, robuste aux espaces clos, fumée, obscurité partielle.</p>
+        </li>
+        <li class="cap-item">
+          <span class="cap-k">02</span>
+          <h3 class="cap-t">Cartographie 3D dense</h3>
+          <p class="cap-d">Reconstruction du volume intérieur en moins de 90 secondes pour une surface de 400 m².</p>
+        </li>
+        <li class="cap-item">
+          <span class="cap-k">03</span>
+          <h3 class="cap-t">Détection sélective</h3>
+          <p class="cap-d">Distinction combattant / civil / non-humain. Aucun engagement automatisé — l'humain décide.</p>
+        </li>
+        <li class="cap-item">
+          <span class="cap-k">04</span>
+          <h3 class="cap-t">Liaison résiliente</h3>
+          <p class="cap-d">Transmission opportuniste, reprise automatique. Données exploitables même en cas de retour partiel.</p>
+        </li>
+        <li class="cap-item">
+          <span class="cap-k">05</span>
+          <h3 class="cap-t">Lancement à la main</h3>
+          <p class="cap-d">Déploiement en moins de huit secondes, depuis un sac de patrouille standard.</p>
+        </li>
+        <li class="cap-item">
+          <span class="cap-k">06</span>
+          <h3 class="cap-t">Retour ou sacrifice</h3>
+          <p class="cap-d">Ralliement autonome au point de lancement, ou auto-destruction des données en cas de capture.</p>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <svg viewBox="0 0 220 130" width="38" height="22" style="display:block" aria-label="OverSight">
+      <g fill="currentColor">
+        <rect x="6"   y="14" width="30" height="30" rx="8"/>
+        <rect x="46"  y="14" width="30" height="30" rx="8"/>
+        <rect x="46"  y="54" width="30" height="70" rx="14"/>
+        <rect x="92"  y="6"  width="30" height="38" rx="10"/>
+        <rect x="92"  y="54" width="30" height="70" rx="14"/>
+        <path d="M76 44 Q 92 44 92 28 L 92 36 Q 92 54 76 54 Z"/>
+        <rect x="138" y="6"  width="30" height="38" rx="10"/>
+        <rect x="138" y="54" width="30" height="70" rx="14"/>
+        <path d="M122 44 Q 138 44 138 28 L 138 36 Q 138 54 122 54 Z"/>
+      </g>
+    </svg>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('is-scrolled', window.scrollY > 8);
+    }, { passive: true });
+  </script>
+
+</body>
+</html>
