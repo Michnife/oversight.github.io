@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
   <style>
     :root {
       --bg:      #FFFFFF;
@@ -453,6 +454,84 @@
       padding: 0;
     }
 
+    /* ── markdown render ─────────────────────────────────────────────── */
+
+    .md-body {
+      padding: 24px 28px;
+      max-height: 520px;
+      overflow-y: auto;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink-2);
+    }
+    .md-body > *:first-child { margin-top: 0; }
+    .md-body > *:last-child  { margin-bottom: 0; }
+    .md-body h1, .md-body h2, .md-body h3, .md-body h4 {
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin: 22px 0 10px;
+      line-height: 1.2;
+    }
+    .md-body h1 { font-size: 24px; }
+    .md-body h2 { font-size: 19px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+    .md-body h3 { font-size: 16px; }
+    .md-body h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--mute); }
+    .md-body p  { margin: 0 0 12px; }
+    .md-body ul, .md-body ol { margin: 0 0 12px; padding-left: 22px; }
+    .md-body li { margin-bottom: 5px; }
+    .md-body strong { font-weight: 600; color: var(--ink); }
+    .md-body em     { font-style: italic; color: var(--mute); }
+    .md-body a      { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+    .md-body hr     { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+    .md-body blockquote {
+      margin: 0 0 12px;
+      padding: 4px 16px;
+      border-left: 3px solid var(--line);
+      color: var(--mute);
+    }
+    .md-body code {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    .md-body pre {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: 16px;
+      overflow-x: auto;
+      margin: 0 0 12px;
+    }
+    .md-body pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+    .md-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+    .md-body th {
+      text-align: left;
+      font-weight: 600;
+      color: var(--ink);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--line);
+    }
+    .md-body td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
     /* ── animations ──────────────────────────────────────────────────── */
 
     @keyframes reveal {
@@ -766,18 +845,29 @@
         preview.appendChild(embed);
       } else {
         // Text files: fetch works on HTTP(S) but is blocked on file://
-        const pre = document.createElement('pre');
-        preview.appendChild(pre);
         if (location.protocol === 'file:') {
-          pre.textContent = '⚠ Prévisualisation indisponible en local (protocole file://).\nSur GitHub Pages le contenu s\'affiche ici automatiquement.\nEn attendant, cliquez sur « Ouvrir → » ci-dessous.';
+          const pre = document.createElement('pre');
+          pre.textContent = '⚠ Prévisualisation indisponible en local (protocole file://).\nSur GitHub Pages le contenu s\'affiche ici automatiquement.';
+          preview.appendChild(pre);
         } else {
-          pre.textContent = 'Chargement…';
           try {
             const res = await fetch(path);
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            pre.textContent = await res.text();
+            const text = await res.text();
+            if (ext === 'MD') {
+              const div = document.createElement('div');
+              div.className = 'md-body';
+              div.innerHTML = marked.parse(text);
+              preview.appendChild(div);
+            } else {
+              const pre = document.createElement('pre');
+              pre.textContent = text;
+              preview.appendChild(pre);
+            }
           } catch {
+            const pre = document.createElement('pre');
             pre.textContent = 'Impossible de charger le fichier.';
+            preview.appendChild(pre);
           }
         }
       }
