@@ -741,9 +741,6 @@
           </button>
           <div class="file-body" hidden>
             <div class="file-preview is-loading"></div>
-            <div class="file-actions">
-              <a href="${encoded}" target="_blank" rel="noopener" class="file-btn file-btn-solid">Ouvrir →</a>
-            </div>
           </div>
         </li>`;
     }
@@ -855,7 +852,7 @@
     // ── Mount ────────────────────────────────────────────────────────────
 
     const list = document.getElementById('obj-list');
-    list.innerHTML = OBJECTIFS.map((obj, i) => renderObjectif(obj, i === 0)).join('');
+    list.innerHTML = OBJECTIFS.map(obj => renderObjectif(obj, false)).join('');
 
     // ── Toggle logic (event delegation) ─────────────────────────────────
 
