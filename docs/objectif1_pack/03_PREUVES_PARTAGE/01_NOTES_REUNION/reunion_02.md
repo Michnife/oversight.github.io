@@ -1,0 +1,2 @@
+Réunion 2 — priorités fonctionnelles
+Le point principal de cette réunion a été la hiérarchisation des besoins. La détection de présence humaine a été confirmée comme fonction centrale. La reconnaissance faciale et l’analyse de gestes ou de posture ont été repositionnées comme modules d’enrichissement ou de démonstration. La réunion a aussi permis de valider l’idée qu’un projet bien structuré devait éviter de traiter tous les modules comme prioritaires au même niveau.

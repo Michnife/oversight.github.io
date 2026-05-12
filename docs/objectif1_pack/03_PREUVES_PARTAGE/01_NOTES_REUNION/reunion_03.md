@@ -1,0 +1,2 @@
+Réunion 3 — organisation des prototypes
+Cette réunion a surtout porté sur l’état des scripts existants et sur la nécessité de mieux les centraliser. La mise en place d’un launcher unique a été retenue comme amélioration concrète pour faciliter les tests, les démonstrations et la lisibilité de l’ensemble. La discussion a également souligné l’intérêt d’un outil de dataset pour la partie reconnaissance faciale.

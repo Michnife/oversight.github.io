@@ -1,0 +1,2 @@
+Réunion 5 — lecture des résultats et choix
+Cette réunion a permis de tirer une première conclusion des expérimentations : les modules unitaires gardent une bonne fluidité alors que les pipelines combinés coûtent plus cher en ressources. Il a été retenu que les combinaisons restaient intéressantes pour illustrer la richesse du projet, mais qu’elles ne devaient pas être présentées comme configuration de base sans réserve. La priorité a été confirmée sur les briques les plus utiles au scénario principal.

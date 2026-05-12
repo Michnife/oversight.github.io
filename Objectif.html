@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OverSight — Objectifs</title>
+  <meta name="description" content="Objectifs du projet OverSight — documentation structurée par pack.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #FFFFFF;
+      --bg-2:    #F4F2EE;
+      --ink:     #0A0A0A;
+      --ink-2:   #2A2724;
+      --mute:    #6F6962;
+      --line:    #E6E2DA;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 22px;
+      --r-xl: 28px;
+      --pad: clamp(20px, 4vw, 56px);
+      --col-max: 1320px;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Space Grotesk", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+      font-feature-settings: "ss01", "ss02";
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      line-height: 1.45;
+    }
+    ::selection { background: var(--ink); color: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ── nav ─────────────────────────────────────────────────────────── */
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 32px;
+      padding: 18px var(--pad);
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .25s ease, background .25s ease;
+    }
+    .nav.is-scrolled { border-bottom-color: var(--line); }
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+    }
+    .nav-wordmark {
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      font-size: 18px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+    .nav-links a { position: relative; padding: 4px 0; }
+    .nav-links a:hover { color: var(--mute); }
+    .nav-links a.is-active { color: var(--ink); }
+    .nav-links a.is-active::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--ink);
+      margin-top: 2px;
+    }
+
+    /* ── page layout ─────────────────────────────────────────────────── */
+
+    .page {
+      max-width: var(--col-max);
+      margin: 0 auto;
+      padding: 60px var(--pad) 120px;
+    }
+    .page-head {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 56px;
+      max-width: 880px;
+    }
+    .page-title {
+      font-size: clamp(48px, 8vw, 112px);
+      line-height: 0.96;
+      letter-spacing: -0.035em;
+      font-weight: 500;
+      margin: 0;
+      text-wrap: balance;
+    }
+
+    /* ── footer ──────────────────────────────────────────────────────── */
+
+    .foot {
+      border-top: 1px solid var(--line);
+      padding: 28px var(--pad);
+      max-width: var(--col-max);
+      margin: 0 auto;
+    }
+
+    /* ── Objective card ──────────────────────────────────────────────── */
+
+    .obj-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .obj {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      transition: border-color .2s ease;
+    }
+    .obj.is-open { border-color: var(--ink); }
+
+    .obj-head {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 24px 64px 1fr auto;
+      align-items: center;
+      gap: 20px;
+      padding: 22px 28px;
+      background: transparent;
+      border: none;
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .obj-head:hover { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+
+    .obj-chev {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mute);
+    }
+    .obj.is-open .obj-chev { color: var(--ink); }
+
+    .obj-n {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      justify-self: start;
+    }
+    .obj.is-open .obj-n { color: var(--ink); border-color: var(--ink); }
+
+    .obj-title {
+      font-size: clamp(18px, 2vw, 24px);
+      letter-spacing: -0.015em;
+      font-weight: 500;
+    }
+
+    .obj-count {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .obj-body {
+      padding: 0 28px 28px;
+      border-top: 1px solid var(--line);
+      animation: reveal .25s ease;
+    }
+
+    .obj-summary {
+      margin: 20px 0 22px;
+      font-size: 16px;
+      color: var(--ink-2);
+      max-width: 70ch;
+      line-height: 1.55;
+    }
+
+    /* ── folder row (level 2) ────────────────────────────────────────── */
+
+    .items-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .folder-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .folder-item:last-child { border-bottom: none; }
+
+    .folder-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 4px;
+      background: transparent;
+      border: none;
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+    }
+    .folder-row:hover { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+
+    .folder-chev {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .folder-row:hover .folder-chev,
+    .folder-item.is-open .folder-chev {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    .folder-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+
+    .folder-count {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .folder-body {
+      padding: 0 4px 14px 52px;
+      animation: reveal .2s ease;
+    }
+
+    /* ── file row (level 3) ──────────────────────────────────────────── */
+
+    .files-head {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 4px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .files-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .file-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .file-item:last-child { border-bottom: none; }
+
+    .file-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 13px 4px;
+      background: transparent;
+      border: none;
+      text-align: left;
+      color: var(--ink);
+      cursor: pointer;
+      font: inherit;
+    }
+    .file-row:hover { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+
+    .file-act {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .file-row:hover .file-act,
+    .file-item.is-open .file-act {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    .file-name {
+      font-size: 15px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+
+    .file-ext {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+
+    .file-body {
+      padding: 0 4px 18px 52px;
+      animation: reveal .2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .file-preview {
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      background: var(--bg-2);
+    }
+    .file-preview.is-loading {
+      min-height: 120px;
+      background:
+        repeating-linear-gradient(135deg, transparent 0 14px, rgba(10,10,10,0.05) 14px 15px),
+        var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-preview img {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      object-fit: contain;
+      background: var(--bg-2);
+    }
+    .file-preview embed {
+      display: block;
+      width: 100%;
+      height: 560px;
+      border: none;
+    }
+    .file-preview pre {
+      margin: 0;
+      padding: 20px 24px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      max-height: 480px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--ink);
+      background: var(--bg-2);
+    }
+    .file-preview-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      background: var(--bg);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+
+    .file-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .file-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: transform .15s ease, background .15s ease;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .file-btn-solid {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .file-btn-solid:hover { transform: translateY(-1px); }
+
+    /* top-level file rows (for flat objectif_complémentaire) */
+    .top-files-head {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 4px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mute);
+    }
+    .top-files-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── animations ──────────────────────────────────────────────────── */
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── responsive ──────────────────────────────────────────────────── */
+
+    @media (max-width: 960px) {
+      .nav { grid-template-columns: auto auto; gap: 16px; }
+      .nav-links { display: none; }
+      .obj-head { grid-template-columns: 24px auto 1fr; gap: 14px; padding: 18px 20px; }
+      .obj-count { display: none; }
+      .obj-body { padding: 0 20px 22px; }
+    }
+    @media (max-width: 600px) {
+      .folder-count { display: none; }
+      .file-ext { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="index.html" class="nav-brand">
+      <svg viewBox="0 0 220 130" width="38" height="22" style="display:block" aria-label="OverSight">
+        <g fill="currentColor">
+          <rect x="6"   y="14" width="30" height="30" rx="8"/>
+          <rect x="46"  y="14" width="30" height="30" rx="8"/>
+          <rect x="46"  y="54" width="30" height="70" rx="14"/>
+          <rect x="92"  y="6"  width="30" height="38" rx="10"/>
+          <rect x="92"  y="54" width="30" height="70" rx="14"/>
+          <path d="M76 44 Q 92 44 92 28 L 92 36 Q 92 54 76 54 Z"/>
+          <rect x="138" y="6"  width="30" height="38" rx="10"/>
+          <rect x="138" y="54" width="30" height="70" rx="14"/>
+          <path d="M122 44 Q 138 44 138 28 L 138 36 Q 138 54 122 54 Z"/>
+        </g>
+      </svg>
+      <span class="nav-wordmark">OverSight</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#system">Système</a>
+      <a href="index.html#capacites">Capacités</a>
+      <a href="Objectif.html" class="is-active">Objectifs</a>
+    </nav>
+    <div></div>
+  </header>
+
+  <main class="page">
+    <header class="page-head">
+      <h1 class="page-title">Objectifs.</h1>
+    </header>
+    <section class="obj-list" id="obj-list"></section>
+  </main>
+
+  <footer class="foot">
+    <svg viewBox="0 0 220 130" width="38" height="22" style="display:block" aria-label="OverSight">
+      <g fill="currentColor">
+        <rect x="6"   y="14" width="30" height="30" rx="8"/>
+        <rect x="46"  y="14" width="30" height="30" rx="8"/>
+        <rect x="46"  y="54" width="30" height="70" rx="14"/>
+        <rect x="92"  y="6"  width="30" height="38" rx="10"/>
+        <rect x="92"  y="54" width="30" height="70" rx="14"/>
+        <path d="M76 44 Q 92 44 92 28 L 92 36 Q 92 54 76 54 Z"/>
+        <rect x="138" y="6"  width="30" height="38" rx="10"/>
+        <rect x="138" y="54" width="30" height="70" rx="14"/>
+        <path d="M122 44 Q 138 44 138 28 L 138 36 Q 138 54 122 54 Z"/>
+      </g>
+    </svg>
+  </footer>
+
+  <script>
+    // ── Data ────────────────────────────────────────────────────────────
+    const OBJECTIFS = [
+      {
+        n: "01",
+        title: "Objectif 1",
+        summary: "Veille technologique et benchmark des briques logicielles — détection, pose, reconnaissance faciale et gestes de la main.",
+        items: [
+          {
+            type: "folder", name: "Veille",
+            items: [
+              { type: "file", name: "Contexte et fonctionnement du mini-drone", path: "docs/objectif1_pack/01_VEILLE/01_contexte_et_fonctionnement_du_mini_drone.md", ext: "MD" },
+              { type: "file", name: "Capteurs, contraintes indoor et chaîne d'observation", path: "docs/objectif1_pack/01_VEILLE/02_capteurs_contraintes_indoor_et_chaine_d_observation.md", ext: "MD" },
+              { type: "file", name: "YOLO — détection personnes, objets et pose", path: "docs/objectif1_pack/01_VEILLE/03_yolo_detection_personnes_objets_et_pose.md", ext: "MD" },
+              { type: "file", name: "Reconnaissance faciale et identification", path: "docs/objectif1_pack/01_VEILLE/04_reconnaissance_faciale_et_identification.md", ext: "MD" },
+              { type: "file", name: "Gestes de la main et modules complémentaires", path: "docs/objectif1_pack/01_VEILLE/05_gestes_de_la_main_et_modules_complementaires.md", ext: "MD" },
+              { type: "file", name: "Structuration logicielle, benchmark et synthèse", path: "docs/objectif1_pack/01_VEILLE/06_structuration_logicielle_benchmark_et_synthese.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Benchmark",
+            items: [
+              { type: "file", name: "Méthode de test", path: "docs/objectif1_pack/02_BENCHMARK/01_methode_de_test.md", ext: "MD" },
+              { type: "file", name: "Tableau final et lecture", path: "docs/objectif1_pack/02_BENCHMARK/02_tableau_final_et_lecture.md", ext: "MD" },
+              { type: "file", name: "Analyse détaillée", path: "docs/objectif1_pack/02_BENCHMARK/03_analyse_detaillee.md", ext: "MD" },
+              { type: "file", name: "Réponse à la question du lag", path: "docs/objectif1_pack/02_BENCHMARK/04_reponse_a_la_question_du_lag.md", ext: "MD" },
+              { type: "file", name: "Décisions techniques", path: "docs/objectif1_pack/02_BENCHMARK/05_decisions_techniques.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Preuves & Partage",
+            items: [
+              { type: "file", name: "Index des preuves", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/00_INDEX_PREUVES.md", ext: "MD" },
+              {
+                type: "folder", name: "Notes de Réunion",
+                items: [
+                  { type: "file", name: "Réunion 01", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/01_NOTES_REUNION/reunion_01.md", ext: "MD" },
+                  { type: "file", name: "Réunion 02", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/01_NOTES_REUNION/reunion_02.md", ext: "MD" },
+                  { type: "file", name: "Réunion 03", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/01_NOTES_REUNION/reunion_03.md", ext: "MD" },
+                  { type: "file", name: "Réunion 04", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/01_NOTES_REUNION/reunion_04.md", ext: "MD" },
+                  { type: "file", name: "Réunion 05", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/01_NOTES_REUNION/reunion_05.md", ext: "MD" },
+                ]
+              },
+              {
+                type: "folder", name: "Captures GitHub",
+                items: [
+                  { type: "file", name: "Arborescence", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_arborescence.png", ext: "PNG" },
+                  { type: "file", name: "CI", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_ci.png", ext: "PNG" },
+                  { type: "file", name: "Commits", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_commits.png", ext: "PNG" },
+                  { type: "file", name: "Exemple d'issue", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_issue_exemple.png", ext: "PNG" },
+                  { type: "file", name: "Issues", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_issues.png", ext: "PNG" },
+                  { type: "file", name: "Kanban", path: "docs/objectif1_pack/03_PREUVES_PARTAGE/02_CAPTURES_GITHUB/github_kanban.png", ext: "PNG" },
+                ]
+              }
+            ]
+          },
+          {
+            type: "folder", name: "Captures",
+            items: [
+              { type: "file", name: "Liste détaillée des captures", path: "docs/objectif1_pack/04_CAPTURES/liste_detaillee_des_captures.md", ext: "MD" },
+              {
+                type: "folder", name: "Captures Produit",
+                items: [
+                  { type: "file", name: "Launcher", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/01_launcher.png", ext: "PNG" },
+                  { type: "file", name: "Dataset visage", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/02_dataset_visage.png", ext: "PNG" },
+                  { type: "file", name: "Reconnaissance faciale", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/03_face_recognition.png", ext: "PNG" },
+                  { type: "file", name: "Tracking facial", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/04_face_tracking.png", ext: "PNG" },
+                  { type: "file", name: "YOLO — Objets", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/05_yolo_objects.png", ext: "PNG" },
+                  { type: "file", name: "YOLO — Pose", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/06_yolo_pose.png", ext: "PNG" },
+                  { type: "file", name: "Détection forme visage", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/07_shape_face.png", ext: "PNG" },
+                  { type: "file", name: "Reconnaissance combinée", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/08_combined_recognition.png", ext: "PNG" },
+                  { type: "file", name: "Reconnaissance main", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/09_hand_recognition.png", ext: "PNG" },
+                  { type: "file", name: "README", path: "docs/objectif1_pack/04_CAPTURES/01_CAPTURES_PRODUIT/README.txt", ext: "TXT" },
+                ]
+              },
+              {
+                type: "folder", name: "Captures Benchmark",
+                items: [
+                  { type: "file", name: "Launcher benchmark", path: "docs/objectif1_pack/04_CAPTURES/02_CAPTURES_BENCHMARK/10_benchmark_launcher.png", ext: "PNG" },
+                  { type: "file", name: "Tableau benchmark", path: "docs/objectif1_pack/04_CAPTURES/02_CAPTURES_BENCHMARK/11_benchmark_tableau.png", ext: "PNG" },
+                  { type: "file", name: "Graphes benchmark", path: "docs/objectif1_pack/04_CAPTURES/02_CAPTURES_BENCHMARK/12_benchmark_graphes.png", ext: "PNG" },
+                  { type: "file", name: "README", path: "docs/objectif1_pack/04_CAPTURES/02_CAPTURES_BENCHMARK/README.txt", ext: "TXT" },
+                ]
+              }
+            ]
+          },
+          {
+            type: "folder", name: "Annexes",
+            items: [
+              { type: "file", name: "Résumé exécutif — Objectif 1", path: "docs/objectif1_pack/05_ANNEXES/01_resume_executif_objectif_1.md", ext: "MD" },
+              { type: "file", name: "Benchmark — fichiers sources", path: "docs/objectif1_pack/05_ANNEXES/02_benchmark_fichiers_sources.md", ext: "MD" },
+              { type: "file", name: "Source benchmark (JSON)", path: "docs/objectif1_pack/05_ANNEXES/source_benchmark.json", ext: "JSON" },
+              { type: "file", name: "Source benchmark (Markdown)", path: "docs/objectif1_pack/05_ANNEXES/source_benchmark.md", ext: "MD" },
+              { type: "file", name: "Source rapport drone logiciel", path: "docs/objectif1_pack/05_ANNEXES/source_rapport_drone_logiciel.md", ext: "MD" },
+            ]
+          }
+        ]
+      },
+      {
+        n: "02",
+        title: "Objectif 2",
+        summary: "Architecture technique modulaire, qualité du code, CI Python et gestion de projet GitHub.",
+        items: [
+          {
+            type: "folder", name: "Architecture",
+            items: [
+              { type: "file", name: "Vue d'ensemble", path: "docs/objectif2_pack/01_ARCHITECTURE/01_vue_ensemble.md", ext: "MD" },
+              { type: "file", name: "Modules et responsabilités", path: "docs/objectif2_pack/01_ARCHITECTURE/02_modules_et_responsabilites.md", ext: "MD" },
+              { type: "file", name: "Flux de données", path: "docs/objectif2_pack/01_ARCHITECTURE/03_flux_de_donnees.md", ext: "MD" },
+              { type: "file", name: "Justification des choix", path: "docs/objectif2_pack/01_ARCHITECTURE/04_justification_des_choix.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Qualité & CI / Tests",
+            items: [
+              { type: "file", name: "Qualité du code et conventions", path: "docs/objectif2_pack/02_QUALITE_CI_TESTS/01_qualite_code_et_conventions.md", ext: "MD" },
+              { type: "file", name: "CI Python", path: "docs/objectif2_pack/02_QUALITE_CI_TESTS/02_ci_python.md", ext: "MD" },
+              { type: "file", name: "Tests retenus", path: "docs/objectif2_pack/02_QUALITE_CI_TESTS/03_tests_retenus.md", ext: "MD" },
+              { type: "file", name: "Robustesse, logs et erreurs", path: "docs/objectif2_pack/02_QUALITE_CI_TESTS/04_robustesse_logs_et_erreurs.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Gestion Projet GitHub",
+            items: [
+              { type: "file", name: "Labels recommandés", path: "docs/objectif2_pack/03_GESTION_PROJET_GITHUB/01_labels_recommandes.md", ext: "MD" },
+              { type: "file", name: "Structure du projet GitHub", path: "docs/objectif2_pack/03_GESTION_PROJET_GITHUB/02_structure_project_github.md", ext: "MD" },
+              { type: "file", name: "Modèle d'issue — Objectif 2", path: "docs/objectif2_pack/03_GESTION_PROJET_GITHUB/03_modele_issue_objectif2.md", ext: "MD" },
+              { type: "file", name: "Modèle de PR", path: "docs/objectif2_pack/03_GESTION_PROJET_GITHUB/04_modele_pr.md", ext: "MD" },
+              { type: "file", name: "Preuves à prendre", path: "docs/objectif2_pack/03_GESTION_PROJET_GITHUB/05_preuves_a_prendre.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Notes de Réunion",
+            items: [
+              { type: "file", name: "Réunion 01", path: "docs/objectif2_pack/04_NOTES_REUNION/reunion_01.md", ext: "MD" },
+              { type: "file", name: "Réunion 02", path: "docs/objectif2_pack/04_NOTES_REUNION/reunion_02.md", ext: "MD" },
+              { type: "file", name: "Réunion 03", path: "docs/objectif2_pack/04_NOTES_REUNION/reunion_03.md", ext: "MD" },
+              { type: "file", name: "Réunion 04", path: "docs/objectif2_pack/04_NOTES_REUNION/reunion_04.md", ext: "MD" },
+              { type: "file", name: "Réunion 05", path: "docs/objectif2_pack/04_NOTES_REUNION/reunion_05.md", ext: "MD" },
+            ]
+          },
+          {
+            type: "folder", name: "Captures",
+            items: [
+              { type: "file", name: "Capture 1", path: "docs/objectif2_pack/05_CAPTURES/1.png", ext: "PNG" },
+              { type: "file", name: "Capture écran — 2026-03-06", path: "docs/objectif2_pack/05_CAPTURES/Capture d’écran du 2026-03-06 10-56-26.png", ext: "PNG" },
+              { type: "file", name: "Commits GitHub", path: "docs/objectif2_pack/05_CAPTURES/github_commits.png", ext: "PNG" },
+              { type: "file", name: "Documentation architecture", path: "docs/objectif2_pack/05_CAPTURES/objectif2_architecture_doc.png", ext: "PNG" },
+              { type: "file", name: "Branches", path: "docs/objectif2_pack/05_CAPTURES/objectif2_branches.png", ext: "PNG" },
+              { type: "file", name: "CI", path: "docs/objectif2_pack/05_CAPTURES/objectif2_ci.png", ext: "PNG" },
+              { type: "file", name: "CI Documentation", path: "docs/objectif2_pack/05_CAPTURES/objectif2_ci_doc.png", ext: "PNG" },
+              { type: "file", name: "Issue", path: "docs/objectif2_pack/05_CAPTURES/objectif2_issue.png", ext: "PNG" },
+              { type: "file", name: "Exemple d'issue", path: "docs/objectif2_pack/05_CAPTURES/objectif2_issue_exemple.png", ext: "PNG" },
+              { type: "file", name: "Project GitHub", path: "docs/objectif2_pack/05_CAPTURES/objectif2_project.png", ext: "PNG" },
+              { type: "file", name: "README", path: "docs/objectif2_pack/05_CAPTURES/objectif2_readme.png", ext: "PNG" },
+              { type: "file", name: "Tests", path: "docs/objectif2_pack/05_CAPTURES/objectif2_tests.png", ext: "PNG" },
+              { type: "file", name: "Arborescence dépôt", path: "docs/objectif2_pack/05_CAPTURES/objectif2_tree_repo.png", ext: "PNG" },
+              { type: "file", name: "Workflows", path: "docs/objectif2_pack/05_CAPTURES/objectif2_workflows.png", ext: "PNG" },
+            ]
+          }
+        ]
+      },
+      {
+        n: "C1",
+        title: "Objectif Complémentaire 1",
+        summary: "Dépôt e-Soleau et protection de la propriété intellectuelle du projet OverSight.",
+        items: [
+          { type: "file", name: "Dossier e-Soleau — OverSight", path: "docs/objectif_complémentaire1/e_soleau_over_sight.pdf", ext: "PDF" },
+          { type: "file", name: "Preuve de dépôt", path: "docs/objectif_complémentaire1/preuve_de_depot.pdf", ext: "PDF" },
+        ]
+      },
+      {
+        n: "C2",
+        title: "Objectif Complémentaire 2",
+        summary: "Documentation technique complémentaire — architecture modulaire et qualité / CI du projet.",
+        items: [
+          { type: "file", name: "Architecture technique — Objectif 2", path: "docs/objectif_complémentaire2/architecture_technique_objectif2.md", ext: "MD" },
+          { type: "file", name: "CI et qualité — Objectif 2", path: "docs/objectif_complémentaire2/ci_et_qualite_objectif2.md", ext: "MD" },
+          { type: "file", name: "Rapport Objectif Complémentaire 2", path: "docs/objectif_complémentaire2/objectif_complementaire2.pdf", ext: "PDF" },
+        ]
+      }
+    ];
+
+    // ── Helpers ─────────────────────────────────────────────────────────
+
+    function countFiles(items) {
+      let n = 0;
+      for (const item of items) {
+        if (item.type === 'file') n++;
+        else if (item.type === 'folder') n += countFiles(item.items);
+      }
+      return n;
+    }
+
+    const CHEVRON_SVG = `<svg width="14" height="14" viewBox="0 0 14 14" style="display:block;transition:transform .25s ease" aria-hidden="true">
+      <path d="M4 2 L10 7 L4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+
+    function encodePath(p) {
+      return p.split('/').map(s => encodeURIComponent(s)).join('/');
+    }
+
+    // ── Renderers ────────────────────────────────────────────────────────
+
+    function renderFileItem(file) {
+      const encoded = encodePath(file.path);
+      return `
+        <li class="file-item" data-path="${encoded}" data-ext="${file.ext}">
+          <button class="file-row" type="button">
+            <span class="file-act">${CHEVRON_SVG}</span>
+            <span class="file-name">${file.name}</span>
+            <span class="file-ext">${file.ext}</span>
+          </button>
+          <div class="file-body" hidden>
+            <div class="file-preview is-loading"></div>
+            <div class="file-actions">
+              <a href="${encoded}" target="_blank" rel="noopener" class="file-btn file-btn-solid">Ouvrir →</a>
+            </div>
+          </div>
+        </li>`;
+    }
+
+    async function loadFilePreview(fileItem) {
+      const preview = fileItem.querySelector('.file-preview');
+      if (!preview || preview.dataset.loaded) return;
+      preview.dataset.loaded = 'true';
+      preview.classList.remove('is-loading');
+
+      const path = fileItem.dataset.path;
+      const ext  = fileItem.dataset.ext;
+
+      if (ext === 'PNG' || ext === 'JPG') {
+        const img = document.createElement('img');
+        img.alt = '';
+        img.src = path;
+        preview.appendChild(img);
+      } else if (ext === 'PDF') {
+        const embed = document.createElement('embed');
+        embed.src = path;
+        embed.type = 'application/pdf';
+        preview.appendChild(embed);
+      } else {
+        // Text files: fetch works on HTTP(S) but is blocked on file://
+        const pre = document.createElement('pre');
+        preview.appendChild(pre);
+        if (location.protocol === 'file:') {
+          pre.textContent = '⚠ Prévisualisation indisponible en local (protocole file://).\nSur GitHub Pages le contenu s\'affiche ici automatiquement.\nEn attendant, cliquez sur « Ouvrir → » ci-dessous.';
+        } else {
+          pre.textContent = 'Chargement…';
+          try {
+            const res = await fetch(path);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            pre.textContent = await res.text();
+          } catch {
+            pre.textContent = 'Impossible de charger le fichier.';
+          }
+        }
+      }
+    }
+
+    function renderFilesList(items) {
+      return `
+        <ul class="files-list">
+          ${items.map(renderFileItem).join('')}
+        </ul>`;
+    }
+
+    function renderFolderItem(folder) {
+      const count = countFiles(folder.items);
+      const label = count === 1 ? '1 fichier' : `${count} fichiers`;
+
+      const innerHtml = folder.items.some(i => i.type === 'folder')
+        ? renderNestedItems(folder.items)
+        : renderFilesList(folder.items);
+
+      return `
+        <li class="folder-item">
+          <button class="folder-row" type="button">
+            <span class="folder-chev">${CHEVRON_SVG}</span>
+            <span class="folder-name">${folder.name}</span>
+            <span class="folder-count">${label}</span>
+          </button>
+          <div class="folder-body" hidden>
+            ${innerHtml}
+          </div>
+        </li>`;
+    }
+
+    function renderNestedItems(items) {
+      const folders = items.filter(i => i.type === 'folder');
+      const files = items.filter(i => i.type === 'file');
+      let html = '';
+      if (folders.length) {
+        html += `<ul class="items-list">${folders.map(renderFolderItem).join('')}</ul>`;
+      }
+      if (files.length) {
+        html += renderFilesList(files);
+      }
+      return html;
+    }
+
+    function renderObjectif(obj, defaultOpen) {
+      const count = countFiles(obj.items);
+      const label = count === 1 ? '1 fichier' : `${count} fichiers`;
+      const hasOnlyFiles = obj.items.every(i => i.type === 'file');
+
+      const bodyContent = hasOnlyFiles
+        ? `<p class="obj-summary">${obj.summary}</p>
+           <ul class="top-files-list">${obj.items.map(renderFileItem).join('')}</ul>`
+        : `<p class="obj-summary">${obj.summary}</p>
+           <ul class="items-list">${obj.items.map(i => i.type === 'folder' ? renderFolderItem(i) : renderFileItem(i)).join('')}</ul>`;
+
+      return `
+        <article class="obj${defaultOpen ? ' is-open' : ''}">
+          <button class="obj-head" type="button" aria-expanded="${defaultOpen}">
+            <span class="obj-chev">${CHEVRON_SVG}</span>
+            <span class="obj-n">${obj.n}</span>
+            <span class="obj-title">${obj.title}</span>
+            <span class="obj-count">${label}</span>
+          </button>
+          <div class="obj-body"${defaultOpen ? '' : ' hidden'}>
+            ${bodyContent}
+          </div>
+        </article>`;
+    }
+
+    // ── Mount ────────────────────────────────────────────────────────────
+
+    const list = document.getElementById('obj-list');
+    list.innerHTML = OBJECTIFS.map((obj, i) => renderObjectif(obj, i === 0)).join('');
+
+    // ── Toggle logic (event delegation) ─────────────────────────────────
+
+    function toggleItem(btn, bodyEl, toggleEl) {
+      const isOpen = toggleEl.classList.contains('is-open');
+      if (isOpen) {
+        toggleEl.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        bodyEl.hidden = true;
+        const chev = btn.querySelector('svg');
+        if (chev) chev.style.transform = 'rotate(0deg)';
+      } else {
+        toggleEl.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        bodyEl.hidden = false;
+        const chev = btn.querySelector('svg');
+        if (chev) chev.style.transform = 'rotate(90deg)';
+      }
+    }
+
+    list.addEventListener('click', e => {
+      // obj-head
+      const objHead = e.target.closest('.obj-head');
+      if (objHead) {
+        const obj = objHead.closest('.obj');
+        const body = obj.querySelector(':scope > .obj-body');
+        toggleItem(objHead, body, obj);
+        return;
+      }
+      // folder-row
+      const folderRow = e.target.closest('.folder-row');
+      if (folderRow) {
+        const folder = folderRow.closest('.folder-item');
+        const body = folder.querySelector(':scope > .folder-body');
+        toggleItem(folderRow, body, folder);
+        return;
+      }
+      // file-row
+      const fileRow = e.target.closest('.file-row');
+      if (fileRow) {
+        const file = fileRow.closest('.file-item');
+        const body = file.querySelector(':scope > .file-body');
+        const wasOpen = file.classList.contains('is-open');
+        toggleItem(fileRow, body, file);
+        if (!wasOpen) loadFilePreview(file);
+        return;
+      }
+    });
+
+    // Set initial chevron states
+    list.querySelectorAll('.obj.is-open .obj-head > .obj-chev svg').forEach(svg => {
+      svg.style.transform = 'rotate(90deg)';
+    });
+
+    // ── Nav scroll ───────────────────────────────────────────────────────
+
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('is-scrolled', window.scrollY > 8);
+    }, { passive: true });
+  </script>
+</body>
+</html>

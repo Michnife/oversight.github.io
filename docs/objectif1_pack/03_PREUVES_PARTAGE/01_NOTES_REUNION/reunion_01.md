@@ -1,0 +1,2 @@
+Réunion 1 — cadrage initial
+Cette réunion a permis de recentrer le projet sur le scénario principal : un mini-drone capable d’entrer dans une pièce, de s’y stabiliser et d’en extraire une information visuelle utile. La discussion a surtout porté sur l’intérêt d’avancer d’abord sur les briques logicielles, afin de ne pas bloquer l’avancement global en attendant l’intégration complète du matériel. Il a été retenu que la vision devait constituer le premier chantier structurant du projet.

@@ -1,0 +1,2 @@
+Réunion 4 — logique de benchmark et de comparaison
+Le besoin d’un benchmark unifié a été confirmé afin d’éviter des comparaisons faites uniquement à l’œil. Les échanges ont mis en avant la nécessité de produire des métriques simples mais parlantes : FPS, consommation CPU et mémoire. Il a aussi été convenu qu’un rendu sérieux devait inclure une interprétation de ces résultats, et pas uniquement des chiffres bruts.

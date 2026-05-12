@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Face Tracking",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/face_tracking/tracking.py",
+    "exit_code": 0,
+    "duration_s": 10.5194784790001,
+    "fps_avg": 19.782306915736726,
+    "fps_min": 3.0067271641616005,
+    "fps_max": 23.834194470768757,
+    "cpu_avg": 862.2809523809525,
+    "ram_avg_mb": 87.20963541666667,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/face_tracking.log",
+    "error": null
+  },
+  {
+    "name": "Face Recognition",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/face_recognition/video_recognition.py",
+    "exit_code": 0,
+    "duration_s": 17.519178122000085,
+    "fps_avg": 21.929195061038005,
+    "fps_min": 3.274818022535433,
+    "fps_max": 115.40551709083641,
+    "cpu_avg": 165.66857142857143,
+    "ram_avg_mb": 479.28839285714287,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/face_recognition.log",
+    "error": null
+  },
+  {
+    "name": "YOLO Objects",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/shape_detection/simple_shape_detection.py",
+    "exit_code": 0,
+    "duration_s": 12.516168837000805,
+    "fps_avg": 28.044535329700988,
+    "fps_min": 2.598130985100419,
+    "fps_max": 57.30786778197042,
+    "cpu_avg": 575.32,
+    "ram_avg_mb": 569.01703125,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/yolo_objects.log",
+    "error": null
+  },
+  {
+    "name": "YOLO Pose",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/shape_detection/complex_shape_detection.py",
+    "exit_code": 0,
+    "duration_s": 12.510733227998571,
+    "fps_avg": 28.692243705074095,
+    "fps_min": 2.6320906881391273,
+    "fps_max": 50.09482198339782,
+    "cpu_avg": 588.516,
+    "ram_avg_mb": 560.9521875,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/yolo_pose.log",
+    "error": null
+  },
+  {
+    "name": "Shape + Face",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/shape_and_face/shape_and_face.py",
+    "exit_code": 0,
+    "duration_s": 19.015765154999826,
+    "fps_avg": 12.925105956931677,
+    "fps_min": 2.5965124657197367,
+    "fps_max": 41.47504332503786,
+    "cpu_avg": 276.0289473684211,
+    "ram_avg_mb": 929.795744243421,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/shape_face.log",
+    "error": null
+  },
+  {
+    "name": "Combined Recognition",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/combined_recognition/combined_recognition.py",
+    "exit_code": 0,
+    "duration_s": 15.021168209999814,
+    "fps_avg": 5.200856574562821,
+    "fps_min": 2.09,
+    "fps_max": 29340.14,
+    "cpu_avg": 361.88666666666666,
+    "ram_avg_mb": 1174.1299479166667,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/combined_recognition.log",
+    "error": null
+  },
+  {
+    "name": "Hand Recognition",
+    "script": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/Poc/IA Sources/hand_recognition/app.py",
+    "exit_code": 0,
+    "duration_s": 13.019825325000056,
+    "fps_avg": 216.11,
+    "fps_min": 2.55,
+    "fps_max": 22738.64,
+    "cpu_avg": 172.4576923076923,
+    "ram_avg_mb": 746.6798377403846,
+    "log_path": "/home/matheo/Documents/G-EIP-600-NCE-6-1-eip-redouane.schemmel/benchmark_reports/run_20260305_235536/hand_recognition.log",
+    "error": null
+  }
+]
